@@ -1,57 +1,72 @@
 package com.daugherty.elevatorsystem.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Call {
-
-    private int callId;
-    private int callTime;
-    private int startfloor;
-    private int endfloor;
-
-    @JsonCreator
-    public Call(@JsonProperty("callid") int callId, @JsonProperty("callTime") int callTime,
-            @JsonProperty("startfloor") int startfloor, @JsonProperty("endfloor") int endfloor) {
-        this.callId = callId;
-        this.callTime = callTime;
-        this.startfloor = startfloor;
-        this.endfloor = endfloor;
-    }
-
-    public int getCallId() {
-        return callId;
-    }
-
-    public int getCallTime() {
-        return callTime;
-    }
-
-    public int getStartfloor() {
-        return startfloor;
-    }
-
-    public int getEndfloor() {
-        return endfloor;
-    }
-
-    public void setCallId(int callId) {
-        this.callId = callId;
-    }
-
-    public void setCallTime(int callTime) {
-        this.callTime = callTime;
-    }
-
-    public void setStartfloor(int startFloor) {
-        this.startfloor = startFloor;
-    }
-
-    public void setEndfloor(int endFloor) {
-        this.endfloor = endFloor;
-    }
-
-
+	private int id;
+	private int callTime;
+	private int startFloor;
+	private int endFloor;
+	private int endTime;
+	private int state;
+	private final int INACTIVE = 0;
+	private final int WAITING = 1;
+	private final int SCHEDULED = 2;
+	private final int IN_TRANSIT = 3;
+	private final int COMPLETE = 4;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public int getCallTime() {
+		return callTime;
+	}
+	public void setCallTime(int callTime) {
+		this.callTime = callTime;
+	}
+	public int getStartFloor() {
+		return startFloor;
+	}
+	public void setStartFloor(int startFloor) {
+		this.startFloor = startFloor;
+	}
+	public int getEndFloor() {
+		return endFloor;
+	}
+	public void setEndFloor(int endFloor) {
+		this.endFloor = endFloor;
+	}
+	public int getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(int endTime) {
+		this.endTime = endTime;
+	}
+	public int getState() {
+		return state;
+	}
+	public void setState(int state) {
+		this.state = state;
+	}
+	public int getTripTime() {
+		return endTime - callTime;
+	}
+	public boolean isInactive() {
+		return state == INACTIVE;
+	}
+	public boolean isWaiting() {
+		return state == WAITING;
+	}
+	public boolean isComplete() {
+		return state == COMPLETE;
+	}
+	public boolean isInTransit() {
+		return state == IN_TRANSIT;
+	}
+	public boolean isScheduled() {
+		return state == SCHEDULED;
+	}
+	
+	
 }

@@ -4,19 +4,21 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Stop {
 
     private int stopId;
     private int elevatorId;
     private int floor;
-    private int[] pickup;
-    private int[] dropoff;
+    private ArrayList<Integer> pickup;
+    private ArrayList<Integer> dropoff;
 
     @JsonCreator
     public Stop(@JsonProperty("stopId") int stopId, @JsonProperty("elevatorId") int elevatorId,
-            @JsonProperty("floor") int floor, @JsonProperty("pickup") int[] pickup,
-            @JsonProperty("dropoff") int[] dropoff) {
+            @JsonProperty("floor") int floor, @JsonProperty("pickup") ArrayList<Integer> pickup,
+            @JsonProperty("dropoff") ArrayList<Integer> dropoff) {
         this.stopId = stopId;
         this.elevatorId = elevatorId;
         this.floor = floor;
@@ -48,19 +50,19 @@ public class Stop {
         this.floor = floor;
     }
 
-    public int[] getPickup() {
+    public ArrayList<Integer> getPickup() {
         return pickup;
     }
 
-    public void setPickup(int[] pickup) {
+    public void setPickup(ArrayList<Integer> pickup) {
         this.pickup = pickup;
     }
 
-    public int[] getDropoff() {
+    public ArrayList<Integer> getDropoff() {
         return dropoff;
     }
 
-    public void setDropoff(int[] dropoff) {
+    public void setDropoff(ArrayList<Integer> dropoff) {
         this.dropoff = dropoff;
     }
 

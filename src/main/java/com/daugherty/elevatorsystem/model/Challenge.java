@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Challenge {
 
@@ -17,7 +19,7 @@ public class Challenge {
     private int timeToOpenDoor;
     private int timeToCloseDoor;
 
-    private Call[] calls;
+    private ArrayList<IncomingCall> calls;
 
     @JsonCreator
     public Challenge(@JsonProperty("challengeId") int challengeId,
@@ -29,7 +31,7 @@ public class Challenge {
             @JsonProperty("secondsPerfloorOverTenFloors") int secondsPerfloorOverTenfloors,
             @JsonProperty("timeToOpenDoor") int timeToOpenDoor,
             @JsonProperty("timeToCloseDoor") int timeToCloseDoor,
-            @JsonProperty("calls") Call[] calls) {
+            @JsonProperty("calls") ArrayList<IncomingCall> calls) {
         this.challengeId = challengeId;
         this.isActive = isActive;
         this.maxFloor = maxFloor;
@@ -78,11 +80,11 @@ public class Challenge {
         return timeToCloseDoor;
     }
 
-    public Call[] getCalls() {
+    public ArrayList<IncomingCall> getCalls() {
         return calls;
     }
 
-    public void setCalls(Call[] calls) {
+    public void setCalls(ArrayList<IncomingCall> calls) {
         this.calls = calls;
     }
 

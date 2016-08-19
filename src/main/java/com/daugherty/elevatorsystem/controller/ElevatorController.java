@@ -1,7 +1,5 @@
 package com.daugherty.elevatorsystem.controller;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +19,7 @@ public class ElevatorController {
     public void solve(@RequestBody Challenge challenge) {
         System.out.println(challenge);
         System.out.println(challenge.getCalls());
-        System.out.println(Arrays.toString(challenge.getCalls()));
+        System.out.println(challenge.getCalls());
 
         elevatorDispatcher.solveChallenge(challenge);
 
