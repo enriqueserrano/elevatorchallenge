@@ -26,6 +26,10 @@ public class Stop {
         this.dropoff = dropoff;
     }
 
+    public Stop() {
+
+    }
+
     public int getStopId() {
         return stopId;
     }

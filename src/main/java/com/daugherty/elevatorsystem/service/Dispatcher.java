@@ -1,6 +1,7 @@
 package com.daugherty.elevatorsystem.service;
 
 import com.daugherty.elevatorsystem.model.*;
+import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,15 +24,51 @@ public class Dispatcher {
 
         // TODO - import data, assign constants to System object
 
-
+        final Solution outputSolution = new Solution();
 
         // primary while loop - iterate once per second
         while (!elevatorSystem.isAllCallsComplete()) {
 
             // TODO
             // execute any drop offs and pickups
+            for (int i = 0; i < elevatorSystem.getElevators().size(); i++) {
+                final Elevator elevator = elevatorSystem.getElevators().get(i);
+                // TODO check that people could still get in before the door completely closes
+                if((elevator.getState() == Elevator.DOOR_OPENING)
+                        && (elevator.getTimeInCurrentState() == 1)) {
 
-            // increment total time at each drop off
+                    final ArrayList<Integer> dropoffIds = new ArrayList<Integer>();
+
+                    final ArrayList<Call> currentPassengers = elevator.getPassengers();
+                    for (int j = 0; j < currentPassengers.size(); j++) {
+                        final Call currentPassenger = currentPassengers.get(j);
+                        if(currentPassenger.getEndFloor() == elevator.getLocationFloor()) {
+                            // Remove from waiting calls
+                            elevatorSystem.removePassengerFromWaitingCalls(currentPassenger);
+                            // Update all calls
+                            elevatorSystem.updateCalls(currentPassenger, currentSeconds);
+                            // Track the stop
+                            dropoffIds.add(currentPassenger.getId());
+                        }
+                    }
+
+                    for (int j = 0; j < dropoffIds.size(); j++) {
+                     // Remove dropoffs from passenger list
+                     final Integer currentDropoffId = dropoffIds.get(j);
+                     elevator.removePassenger(currentDropoffId);
+                        // Add dropoff to stop
+                    }
+
+
+                    final Stop elevatorStop = new Stop();
+                    elevatorStop.setDropoff(dropoffIds);
+                    // TODO  verify that Stop is not empty before pushing that to the solution
+                    // TODO verify that the pickup AND stop aren't empty before pushing that to the solution
+
+                }
+            }
+
+            // TODO continue -- increment total time at each drop off
 
 
 
