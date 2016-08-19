@@ -116,7 +116,64 @@ public class Elevator {
 		return futureCapacity;
 	}
 
-	public void updateState() {
-		// TODO
+	public void updateState(ElevatorSystem elevatorSystem) {
+		if (state == DOOR_OPENING && timeInCurrentState < elevatorSystem.getSecOpenDoor()) {
+			timeInCurrentState++;
+		} else if (state == DOOR_OPENING && timeInCurrentState == elevatorSystem.getSecOpenDoor()) {
+			state = DOOR_CLOSING;
+			timeInCurrentState = 0;
+		} else if (state == DOOR_CLOSING && timeInCurrentState < elevatorSystem.getSecCloseDoor()) {
+			timeInCurrentState++;
+		} else if (state == DOOR_CLOSING && timeInCurrentState == elevatorSystem.getSecCloseDoor()) {
+			if (passengers.size()==0 && scheduledPassengers.size()==0) {
+				state = IDLE;
+			} else {
+				int nextDestination = getNextDestination();
+				state = nextDestination<locationFloor ? MOVING_DOWN : MOVING_UP; 
+			}
+			timeInCurrentState = 0;
+		} else if (state == IDLE) {
+			if (passengers.size() > 0 && scheduledPassengers.size() > 0) {
+				int nextDestination = getNextDestination();
+				state = nextDestination<locationFloor ? MOVING_DOWN : MOVING_UP; 
+			} 
+			timeInCurrentState = 0;
+		} else if (state == MOVING_DOWN && timeInCurrentState < elevatorSystem.getSecPerFloor()) {
+			timeInCurrentState++;
+		} else if (state == MOVING_DOWN && timeInCurrentState == elevatorSystem.getSecPerFloor()) {
+			timeInCurrentState = 0;
+			locationFloor--;
+			if (locationFloor == destinationFloor) {
+				state = DOOR_OPENING;
+			}
+		} else if (state == MOVING_UP && timeInCurrentState < elevatorSystem.getSecPerFloor()) {
+			timeInCurrentState++;
+		} else if (state == MOVING_UP && timeInCurrentState == elevatorSystem.getSecPerFloor()) {
+			timeInCurrentState = 0;
+			locationFloor++;
+			if (locationFloor == destinationFloor) {
+				state = DOOR_OPENING;
+			}
+		}
+	}
+	
+	public int getNextDestination() {
+		int closestFloor = 0;
+		int bestDistance = -1;
+		for (int i=0; i < passengers.size(); i++) {
+			int distance = Math.abs(passengers.get(i).getEndFloor() - locationFloor);
+			if (distance < bestDistance || bestDistance < 0) {
+				bestDistance = distance;
+				closestFloor = passengers.get(i).getEndFloor();
+			}
+		}
+		for (int i=0; i < scheduledPassengers.size(); i++) {
+			int distance = Math.abs(scheduledPassengers.get(i).getStartFloor() - locationFloor);
+			if (distance < bestDistance || bestDistance < 0) {
+				bestDistance = distance;
+				closestFloor = scheduledPassengers.get(i).getStartFloor();
+			}
+		}
+		return closestFloor;
 	}
 }

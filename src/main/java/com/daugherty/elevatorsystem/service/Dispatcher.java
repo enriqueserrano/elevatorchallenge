@@ -81,7 +81,7 @@ public class Dispatcher {
 
             // TODO - update each elevator's state / time in state, direction, etc.
             for (int j=0; j < elevatorSystem.getElevators().size(); j++) {
-                elevatorSystem.getElevators().get(j).updateState();
+                elevatorSystem.getElevators().get(j).updateState(elevatorSystem);
             }
 
 
