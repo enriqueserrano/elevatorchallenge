@@ -100,6 +100,7 @@ public class ElevatorSystem {
 		// TODO
 		// travel to the call
 		int callStartFloor = call.getStartFloor();
+		int callEndFloor = call.getEndFloor();
 		int locationFloor = elevator.getLocationFloor();
 		travelCost = Math.abs(callStartFloor - locationFloor) * secPerFloor;
 
@@ -116,21 +117,21 @@ public class ElevatorSystem {
 			}
 		}
 		for (int n=0; n < elevator.getScheduledPassengers().size(); n++) {
-			Call passenger =  elevator.getScheduledPassengers().get(n);
-			int startFloor = passenger.getStartFloor();
-			int endFloor = passenger.getEndFloor();
+			Call scheduledPassenger =  elevator.getScheduledPassengers().get(n);
+			int startFloor = scheduledPassenger.getStartFloor();
+			int endFloor = scheduledPassenger.getEndFloor();
 			if (startFloor < locationFloor && startFloor > callStartFloor) {
 				stopSet.add(startFloor);
-				if (endFloor < locationFloor && endFloor > callStartFloor) {
+				if (endFloor < startFloor && endFloor > callStartFloor) {
 					stopSet.add(endFloor);
-				} else if(endFloor > locationFloor && endFloor < callStartFloor) {
+				} else if(endFloor > startFloor && endFloor < callStartFloor) {
 					stopSet.add(endFloor);
 				}
 			} else if(startFloor > locationFloor && startFloor < callStartFloor) {
 				stopSet.add(startFloor);
-				if (endFloor < locationFloor && endFloor > callStartFloor) {
+				if (endFloor < startFloor && endFloor > callStartFloor) {
 					stopSet.add(endFloor);
-				} else if(endFloor > locationFloor && endFloor < callStartFloor) {
+				} else if(endFloor > startFloor && endFloor < callStartFloor) {
 					stopSet.add(endFloor);
 				}
 			}
@@ -143,12 +144,65 @@ public class ElevatorSystem {
 		travelCost += secCloseDoor;
 		// travel to destination
 		travelCost = Math.abs(callStartFloor - call.getEndFloor()) * secPerFloor;
-		// any open/closes/stops on the way to the destination
-
-
-
-
-
+		
+		// any open/closes/stops on the way from the pickup to the destination
+		stopSet = new HashSet<Integer>();
+		for (int n=0; n < elevator.getPassengers().size(); n++) {
+			Call passenger =  elevator.getPassengers().get(n);
+			if (!((passenger.getEndFloor() < locationFloor &&
+					passenger.getEndFloor() > callStartFloor) ||(
+				passenger.getEndFloor() > locationFloor &&
+					passenger.getEndFloor() < callStartFloor))) {
+				if (passenger.getEndFloor() < callEndFloor &&
+						passenger.getEndFloor() > callStartFloor) {
+					stopSet.add(passenger.getEndFloor());
+				} else if(passenger.getEndFloor() > callEndFloor &&
+						passenger.getEndFloor() < callStartFloor) {
+					stopSet.add(passenger.getEndFloor());
+				}
+			}
+		}
+		
+		// the people we are scheduled to pick up who aren't going to be dropped
+		// off before picking up the Call
+		
+		for (int n=0; n < elevator.getScheduledPassengers().size(); n++) {
+			Call scheduledPassenger =  elevator.getScheduledPassengers().get(n);
+			int startFloor = scheduledPassenger.getStartFloor();
+			int endFloor = scheduledPassenger.getEndFloor();
+			if (startFloor < locationFloor && startFloor > callStartFloor) {
+				if (endFloor < startFloor && endFloor > callStartFloor) {
+				} else if(endFloor > startFloor && endFloor < callStartFloor) {
+				} else {
+					if ((endFloor > callStartFloor && endFloor < callEndFloor) ||
+							(endFloor < callStartFloor && endFloor > callEndFloor)) {
+						stopSet.add(endFloor);
+					}
+				}
+			} else if(startFloor > locationFloor && startFloor < callStartFloor) {
+				if (endFloor < startFloor && endFloor > callStartFloor) {
+				} else if(endFloor > startFloor && endFloor < callStartFloor) {
+				} else {
+					if ((endFloor > callStartFloor && endFloor < callEndFloor) ||
+							(endFloor < callStartFloor && endFloor > callEndFloor)) {
+						stopSet.add(endFloor);
+					}
+				}
+			} else {
+				// check for scheduled passengers that we don't pick up until after
+				// we pick up the target and see if their pickup floor is on the way
+				// If so, also see if their drop off floor is on the way
+				if ((startFloor < callEndFloor && startFloor > callStartFloor) ||
+						(startFloor > callEndFloor && startFloor < callStartFloor)) {
+					stopSet.add(startFloor);
+					if ((endFloor < callEndFloor && endFloor > startFloor) ||
+							(endFloor > callEndFloor && endFloor < startFloor)) {
+						stopSet.add(endFloor);
+					}
+				}
+			}
+		}
+		travelCost += (stopSet.size() * (secOpenDoor + secCloseDoor));
 		return travelCost;
 	}
 }
