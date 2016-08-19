@@ -17,6 +17,40 @@ public class ElevatorSystem {
 	private int minFloor;
 	private ArrayList<Stop> stops;
 
+    public ElevatorSystem(int numberOfElevators, int maxCapacity,
+                          ArrayList<IncomingCall> allCalls,
+                          int challengeId, int secPerFloor,
+                          int secPerFloorOver10, int secOpenDoor,
+                          int secCloseDoor, int maxFloor, int minFloor) {
+        ArrayList<Elevator> newElevators = new ArrayList<Elevator>();
+        for(int i = 0; i < numberOfElevators; i++) {
+            Elevator elevator = new Elevator(i, maxCapacity);
+            newElevators.add(elevator);
+        }
+        this.elevators = (newElevators);
+
+        ArrayList<Call> formattedCalls = new ArrayList<Call>();
+        for(int j = 0; j < allCalls.size(); j++) {
+            IncomingCall currentIncomingCall = allCalls.get(j);
+            Call formattedCall = new Call(currentIncomingCall.getCallId(),
+                    currentIncomingCall.getCallTime(),
+                    currentIncomingCall.getStartfloor(),
+                    currentIncomingCall.getEndfloor());
+            formattedCalls.add(formattedCall);
+        }
+        this.allCalls = formattedCalls;
+        this.challengeId = challengeId;
+        this.secPerFloor = secPerFloor;
+        this.secPerFloorOver10 = secPerFloorOver10;
+        this.secOpenDoor = secOpenDoor;
+        this.secCloseDoor = secCloseDoor;
+        this.maxFloor = maxFloor;
+        this.minFloor = minFloor;
+
+        this.waitingCalls = new ArrayList<Call>();
+        this.stops = new ArrayList<Stop>();
+    }
+
 	public ArrayList<Elevator> getElevators() {
 		return elevators;
 	}
@@ -218,15 +252,17 @@ public class ElevatorSystem {
 		}
 	}
 
-	public void updateCalls(Call currentPassenger, int currentTime) {
+	public void updateCalls(Call currentPassenger, int newState, int currentTime) {
 		ArrayList<Call> allCalls = this.getAllCalls();
 
 		for(int i = 0; i < allCalls.size(); i++) {
 			Call currentCall = allCalls.get(i);
 			if(currentCall.getId() == currentPassenger.getId()) {
 				Call callToUpdate = allCalls.get(i);
-				callToUpdate.setState(Call.COMPLETE);
-				callToUpdate.setEndTime(currentTime);
+				callToUpdate.setState(newState);
+                if(newState == Call.COMPLETE) {
+                    callToUpdate.setEndTime(currentTime);
+                }
 				return;
 			}
 		}

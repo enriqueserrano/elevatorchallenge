@@ -17,9 +17,16 @@ public class Elevator {
 	public static final int MOVING_DOWN = 5;
 	private int timeInCurrentState;
 
-	public Elevator() {
+	public Elevator(int id, int capacity) {
+		this.id = id;
+		this.capacity = capacity;
+		this.state = Elevator.IDLE;
+		this.capacity = capacity;
+		this.locationFloor = 1;
+		this.destinationFloor = 1;
 		passengers = new ArrayList<Call>();
 		scheduledPassengers = new ArrayList<Call>();
+		this.timeInCurrentState = 0;
 	}
 
 	public int getId() {
@@ -177,13 +184,25 @@ public class Elevator {
 		return closestFloor;
 	}
 
-	public void removePassenger(Integer currentDropoffId) {
+	public void removePassenger(int currentDropoffId) {
 		ArrayList<Call> passengers = this.getPassengers();
 
 		for(int i = 0; i < passengers.size(); i++) {
 			Call currentPassenger = passengers.get(i);
 			if(currentDropoffId == currentPassenger.getId()) {
 				passengers.remove(i);
+				return;
+			}
+		}
+	}
+
+	public void removeScheduledPassenger(int currentPickupId) {
+		ArrayList<Call> scheduledPassengers = this.getScheduledPassengers();
+
+		for(int i = 0; i < scheduledPassengers.size(); i++) {
+			Call currentPassenger = scheduledPassengers.get(i);
+			if(currentPickupId == currentPassenger.getId()) {
+				scheduledPassengers.remove(i);
 				return;
 			}
 		}

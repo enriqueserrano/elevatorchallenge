@@ -16,12 +16,26 @@ public class Dispatcher {
 
     public Solution solveChallenge (Challenge challenge) {
         System.out.println("Solving challenge: " + challenge.getChallengeId());
+
+        ElevatorSystem newElevatorSystem = new ElevatorSystem(
+                challenge.getNumberOfElevators(),
+                challenge.getMaxCapacity(),
+                challenge.getCalls(),
+                challenge.getChallengeId(),
+                challenge.getSecondsPerFloor(),
+                challenge.getSecondsPerFloorOverTenFloors(),
+                challenge.getTimeToOpenDoor(),
+                challenge.getTimeToCloseDoor(),
+                challenge.getMaxfloor(),
+                challenge.getMinfloor()
+        );
+        this.elevatorSystem = newElevatorSystem;
+
         return new Solution();
+        // TODO return the solution from here (start)
     }
 
     public void start() {
-        elevatorSystem = new ElevatorSystem();
-
         // TODO - import data, assign constants to System object
 
         final Solution outputSolution = new Solution();
@@ -46,7 +60,7 @@ public class Dispatcher {
                             // Remove from waiting calls
                             elevatorSystem.removePassengerFromWaitingCalls(currentPassenger);
                             // Update all calls
-                            elevatorSystem.updateCalls(currentPassenger, currentSeconds);
+                            elevatorSystem.updateCalls(currentPassenger, Call.COMPLETE, currentSeconds);
                             // Track the stop
                             dropoffIds.add(currentPassenger.getId());
                         }
@@ -56,14 +70,39 @@ public class Dispatcher {
                      // Remove dropoffs from passenger list
                      final Integer currentDropoffId = dropoffIds.get(j);
                      elevator.removePassenger(currentDropoffId);
-                        // Add dropoff to stop
                     }
 
+                    // Check for people coming in the array of passengers
+                    ArrayList<Integer> pickupIds = new ArrayList<Integer>();
+                    ArrayList<Call> pickupPassengers = new ArrayList<Call>();
+                    ArrayList<Call> scheduledPassengers = elevator.getScheduledPassengers();
+                    for (int k = 0; k < scheduledPassengers.size(); k++) {
+                        Call currentScheduledPassenger = scheduledPassengers.get(k);
+                        if((currentScheduledPassenger.getStartFloor() == elevator.getLocationFloor())
+                                && (elevator.getPassengers().size() < elevator.getCapacity())) {
+                                elevatorSystem.updateCalls(currentScheduledPassenger, Call.IN_TRANSIT, currentSeconds);
+                                pickupIds.add(currentScheduledPassenger.getId());
+                                pickupPassengers.add(currentScheduledPassenger);
+                        }
+                    }
 
+                    for (int j = 0; j < pickupPassengers.size(); j++) {
+                        // Add pickupIds to passenger list
+                        Call pickedPassenger = pickupPassengers.get(j);
+                        elevator.getPassengers().add(pickedPassenger);
+                        elevator.removeScheduledPassenger(pickedPassenger.getId());
+                    }
+
+                    // If we have pickups or dropoffs, add them to the solution
                     final Stop elevatorStop = new Stop();
                     elevatorStop.setDropoff(dropoffIds);
-                    // TODO  verify that Stop is not empty before pushing that to the solution
-                    // TODO verify that the pickup AND stop aren't empty before pushing that to the solution
+                    elevatorStop.setPickup(pickupIds);
+                    if(!dropoffIds.isEmpty() || !pickupIds.isEmpty()) {
+                        elevatorStop.setElevatorId(elevator.getId());
+                        elevatorStop.setFloor(elevator.getLocationFloor());
+                        elevatorStop.setStopId(outputSolution.getStops().size()+1);
+                        outputSolution.getStops().add(elevatorStop);
+                    }
 
                 }
             }
@@ -89,7 +128,7 @@ public class Dispatcher {
                     Call evalCall = elevatorSystem.getWaitingCalls().get(k);
 
                     int lowestCost = 0;
-                    int bestElevator = 0;
+                    int bestElevatorIndex = 0;
 
                     // if so, for each elevator
                     for (int j=0; j < elevatorSystem.getElevators().size(); j++) {
@@ -100,18 +139,20 @@ public class Dispatcher {
                             // check the cost of adding this passenger
                             thisCost = elevatorSystem.costOfNewPassenger(evalCall, evalElevator);
 
-                            // also check the added cost to everybody else on the elevator
+                            // TODO also check the added cost to everybody else on the elevator
 
 
                         }
                         if (thisCost < lowestCost && thisCost >= 0) {
                             lowestCost = thisCost;
-                            bestElevator = j;
+                            bestElevatorIndex = j;
                         }
                     }
 
-                    // TODO - pick the best elevator for this call, and update scheduledpassengers
-
+                    // Pick the best elevator for this call, and update scheduledpassengers
+                    Elevator chosenElevator = elevatorSystem.getElevators().get(bestElevatorIndex);
+                    chosenElevator.getScheduledPassengers().add(evalCall);
+                    evalCall.setState(Call.SCHEDULED);
 
                 }
             }

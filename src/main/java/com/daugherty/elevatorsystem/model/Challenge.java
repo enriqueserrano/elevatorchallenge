@@ -11,11 +11,12 @@ public class Challenge {
 
     private int challengeId;
     private boolean isActive;
-    private int maxFloor;
+    private int maxfloor;
+    private int minfloor;
     private int numberOfElevators;
     private int maxCapacity;
-    private int secondsPerfloor;
-    private int secondsPerfloorOverTenfloors;
+    private int secondsPerFloor;
+    private int secondsPerFloorOverTenFloors;
     private int timeToOpenDoor;
     private int timeToCloseDoor;
 
@@ -24,21 +25,23 @@ public class Challenge {
     @JsonCreator
     public Challenge(@JsonProperty("challengeId") int challengeId,
             @JsonProperty("isActive") boolean isActive,
-            @JsonProperty("maxFloor") int maxFloor,
+            @JsonProperty("maxfloor") int maxfloor,
+            @JsonProperty("minfloor") int minfloor,
             @JsonProperty("numberOfElevators") int numberOfElevators,
             @JsonProperty("maxCapacity") int maxCapacity,
-            @JsonProperty("secondsPerfloor") int secondsPerfloor,
-            @JsonProperty("secondsPerfloorOverTenFloors") int secondsPerfloorOverTenfloors,
+            @JsonProperty("secondsPerFloor") int secondsPerFloor,
+            @JsonProperty("secondsPerfloorOverTenFloors") int secondsPerFloorOverTenFloors,
             @JsonProperty("timeToOpenDoor") int timeToOpenDoor,
             @JsonProperty("timeToCloseDoor") int timeToCloseDoor,
             @JsonProperty("calls") ArrayList<IncomingCall> calls) {
         this.challengeId = challengeId;
         this.isActive = isActive;
-        this.maxFloor = maxFloor;
+        this.maxfloor = maxfloor;
+        this.minfloor = minfloor;
         this.numberOfElevators = numberOfElevators;
         this.maxCapacity = maxCapacity;
-        this.secondsPerfloor = secondsPerfloor;
-        this.secondsPerfloorOverTenfloors = secondsPerfloorOverTenfloors;
+        this.secondsPerFloor = secondsPerFloor;
+        this.secondsPerFloorOverTenFloors = secondsPerFloorOverTenFloors;
         this.timeToOpenDoor = timeToOpenDoor;
         this.timeToCloseDoor = timeToCloseDoor;
         this.calls = calls;
@@ -52,9 +55,11 @@ public class Challenge {
         return isActive;
     }
 
-    public int getMaxFloor() {
-        return maxFloor;
+    public int getMaxfloor() {
+        return maxfloor;
     }
+
+    public int getMinfloor() { return minfloor; }
 
     public int getNumberOfElevators() {
         return numberOfElevators;
@@ -64,12 +69,12 @@ public class Challenge {
         return maxCapacity;
     }
 
-    public int getSecondsPerfloor() {
-        return secondsPerfloor;
+    public int getSecondsPerFloor() {
+        return secondsPerFloor;
     }
 
-    public int getSecondsPerfloorOverTenfloors() {
-        return secondsPerfloorOverTenfloors;
+    public int getSecondsPerFloorOverTenFloors() {
+        return secondsPerFloorOverTenFloors;
     }
 
     public int getTimeToOpenDoor() {
@@ -96,9 +101,12 @@ public class Challenge {
         isActive = active;
     }
 
-    public void setMaxFloor(int maxFloor) {
-        this.maxFloor = maxFloor;
+    public void setMaxfloor(int maxFloor) {
+        this.maxfloor = maxFloor;
     }
+
+    public void setMinfloor(int minfloor) { this.minfloor = minfloor; }
+
 
     public void setNumberOfElevators(int numberOfElevators) {
         this.numberOfElevators = numberOfElevators;
@@ -108,12 +116,12 @@ public class Challenge {
         this.maxCapacity = maxCapacity;
     }
 
-    public void setSecondsPerfloor(int secondsPerfloor) {
-        this.secondsPerfloor = secondsPerfloor;
+    public void setSecondsPerFloor(int secondsPerFloor) {
+        this.secondsPerFloor = secondsPerFloor;
     }
 
-    public void setSecondsPerfloorOverTenfloors(int secondsPerfloorOverTenfloors) {
-        this.secondsPerfloorOverTenfloors = secondsPerfloorOverTenfloors;
+    public void setSecondsPerFloorOverTenFloors(int secondsPerFloorOverTenFloors) {
+        this.secondsPerFloorOverTenFloors = secondsPerFloorOverTenFloors;
     }
 
     public void setTimeToOpenDoor(int timeToOpenDoor) {

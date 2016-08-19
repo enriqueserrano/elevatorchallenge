@@ -12,7 +12,16 @@ public class Call {
 	public static final int SCHEDULED = 2;
 	public static final int IN_TRANSIT = 3;
 	public static final int COMPLETE = 4;
-	
+
+	public Call(int id, int callTime, int startFloor, int endFloor) {
+		this.id = id;
+		this.callTime = callTime;
+		this.startFloor = startFloor;
+		this.endFloor = endFloor;
+		// this.endTime = endTime;
+		this.state = Call.INACTIVE;
+	}
+
 	public int getId() {
 		return id;
 	}
