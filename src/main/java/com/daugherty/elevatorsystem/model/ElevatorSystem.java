@@ -1,6 +1,8 @@
 package com.daugherty.elevatorsystem.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ElevatorSystem {
 	private ArrayList<Elevator> elevators;
@@ -14,8 +16,7 @@ public class ElevatorSystem {
 	private int maxFloor;
 	private int minFloor;
 	private ArrayList<Stop> stops;
-	
-	
+
 	public ArrayList<Elevator> getElevators() {
 		return elevators;
 	}
@@ -82,7 +83,7 @@ public class ElevatorSystem {
 	public void setStops(ArrayList<Stop> stops) {
 		this.stops = stops;
 	}
-	
+
 	public boolean isAllCallsComplete() {
 		boolean complete = true;
 		for (int i=0; i<allCalls.size(); i++) {
@@ -92,5 +93,62 @@ public class ElevatorSystem {
 			}
 		}
 		return complete;
+	}
+
+	public int costOfNewPassenger(Call call, Elevator elevator) {
+		int travelCost = 0;
+		// TODO
+		// travel to the call
+		int callStartFloor = call.getStartFloor();
+		int locationFloor = elevator.getLocationFloor();
+		travelCost = Math.abs(callStartFloor - locationFloor) * secPerFloor;
+
+		// any open/closes/stops on the way to the call
+		Set<Integer> stopSet = new HashSet<Integer>();
+		for (int n=0; n < elevator.getPassengers().size(); n++) {
+			Call passenger =  elevator.getPassengers().get(n);
+			if (passenger.getEndFloor() < locationFloor &&
+					passenger.getEndFloor() > callStartFloor) {
+				stopSet.add(passenger.getEndFloor());
+			} else if(passenger.getEndFloor() > locationFloor &&
+					passenger.getEndFloor() < callStartFloor) {
+				stopSet.add(passenger.getEndFloor());
+			}
+		}
+		for (int n=0; n < elevator.getScheduledPassengers().size(); n++) {
+			Call passenger =  elevator.getScheduledPassengers().get(n);
+			int startFloor = passenger.getStartFloor();
+			int endFloor = passenger.getEndFloor();
+			if (startFloor < locationFloor && startFloor > callStartFloor) {
+				stopSet.add(startFloor);
+				if (endFloor < locationFloor && endFloor > callStartFloor) {
+					stopSet.add(endFloor);
+				} else if(endFloor > locationFloor && endFloor < callStartFloor) {
+					stopSet.add(endFloor);
+				}
+			} else if(startFloor > locationFloor && startFloor < callStartFloor) {
+				stopSet.add(startFloor);
+				if (endFloor < locationFloor && endFloor > callStartFloor) {
+					stopSet.add(endFloor);
+				} else if(endFloor > locationFloor && endFloor < callStartFloor) {
+					stopSet.add(endFloor);
+				}
+			}
+		}
+		travelCost += (stopSet.size() * (secOpenDoor + secCloseDoor));
+
+		// open the door
+		travelCost += secOpenDoor;
+		// close the door
+		travelCost += secCloseDoor;
+		// travel to destination
+		travelCost = Math.abs(callStartFloor - call.getEndFloor()) * secPerFloor;
+		// any open/closes/stops on the way to the destination
+
+
+
+
+
+		return travelCost;
 	}
 }

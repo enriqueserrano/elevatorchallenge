@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daugherty.elevatorsystem.model.Challenge;
+import com.daugherty.elevatorsystem.model.Solution;
 import com.daugherty.elevatorsystem.service.Dispatcher;
 
 @RestController
@@ -16,12 +17,12 @@ public class ElevatorController {
     private Dispatcher elevatorDispatcher;
 
     @RequestMapping(value="/solutions", method=RequestMethod.POST)
-    public void solve(@RequestBody Challenge challenge) {
+    public Solution solve(@RequestBody Challenge challenge) {
         System.out.println(challenge);
         System.out.println(challenge.getCalls());
         System.out.println(challenge.getCalls());
 
-        elevatorDispatcher.solveChallenge(challenge);
+        return elevatorDispatcher.solveChallenge(challenge);
 
         // return new Solution(1, "test");
     }
