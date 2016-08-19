@@ -10,11 +10,11 @@ public class Elevator {
 	private int destinationFloor;
 	private ArrayList<Call> passengers;
 	private ArrayList<Call> scheduledPassengers;
-	private final int IDLE = 0;
-	private final int DOOR_OPENING = 2;
-	private final int DOOR_CLOSING = 3;
-	private final int MOVING_UP = 4;
-	private final int MOVING_DOWN = 5;
+	public static final int IDLE = 0;
+	public static final int DOOR_OPENING = 2;
+	public static final int DOOR_CLOSING = 3;
+	public static final int MOVING_UP = 4;
+	public static final int MOVING_DOWN = 5;
 	private int timeInCurrentState;
 
 	public Elevator() {
@@ -118,5 +118,17 @@ public class Elevator {
 
 	public void updateState() {
 		// TODO
+	}
+
+	public void removePassenger(Integer currentDropoffId) {
+		ArrayList<Call> passengers = this.getPassengers();
+
+		for(int i = 0; i < passengers.size(); i++) {
+			Call currentPassenger = passengers.get(i);
+			if(currentDropoffId == currentPassenger.getId()) {
+				passengers.remove(i);
+				return;
+			}
+		}
 	}
 }

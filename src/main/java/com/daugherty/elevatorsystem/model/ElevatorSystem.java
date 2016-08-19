@@ -205,4 +205,30 @@ public class ElevatorSystem {
 		travelCost += (stopSet.size() * (secOpenDoor + secCloseDoor));
 		return travelCost;
 	}
+
+	public void removePassengerFromWaitingCalls(Call currentPassenger) {
+		ArrayList<Call> waitingCalls = this.getWaitingCalls();
+
+		for(int i = 0; i < waitingCalls.size(); i++) {
+			Call currentCall = waitingCalls.get(i);
+			if(currentCall.getId() == currentPassenger.getId()) {
+				waitingCalls.remove(i);
+				return;
+			}
+		}
+	}
+
+	public void updateCalls(Call currentPassenger, int currentTime) {
+		ArrayList<Call> allCalls = this.getAllCalls();
+
+		for(int i = 0; i < allCalls.size(); i++) {
+			Call currentCall = allCalls.get(i);
+			if(currentCall.getId() == currentPassenger.getId()) {
+				Call callToUpdate = allCalls.get(i);
+				callToUpdate.setState(Call.COMPLETE);
+				callToUpdate.setEndTime(currentTime);
+				return;
+			}
+		}
+	}
 }

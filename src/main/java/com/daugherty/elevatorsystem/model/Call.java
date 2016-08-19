@@ -7,11 +7,11 @@ public class Call {
 	private int endFloor;
 	private int endTime;
 	private int state;
-	private final int INACTIVE = 0;
-	private final int WAITING = 1;
-	private final int SCHEDULED = 2;
-	private final int IN_TRANSIT = 3;
-	private final int COMPLETE = 4;
+	public static final int INACTIVE = 0;
+	public static final int WAITING = 1;
+	public static final int SCHEDULED = 2;
+	public static final int IN_TRANSIT = 3;
+	public static final int COMPLETE = 4;
 	
 	public int getId() {
 		return id;
