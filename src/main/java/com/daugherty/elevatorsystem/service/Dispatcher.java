@@ -77,13 +77,19 @@ public class Dispatcher {
                     ArrayList<Integer> pickupIds = new ArrayList<Integer>();
                     ArrayList<Call> pickupPassengers = new ArrayList<Call>();
                     ArrayList<Call> scheduledPassengers = elevator.getScheduledPassengers();
+                    int initialCapacity = elevator.getPassengers().size();
                     for (int k = 0; k < scheduledPassengers.size(); k++) {
                         Call currentScheduledPassenger = scheduledPassengers.get(k);
                         if((currentScheduledPassenger.getStartFloor() == elevator.getLocationFloor())
-                                && (elevator.getPassengers().size() < elevator.getCapacity())) {
+                                && (initialCapacity < elevator.getCapacity())) {
+                                if(currentScheduledPassenger.getId() == 10) {
+                                    int debugging = 0;
+                                    debugging++;
+                                }
                                 elevatorSystem.updateCalls(currentScheduledPassenger, Call.IN_TRANSIT, currentSeconds);
                                 pickupIds.add(currentScheduledPassenger.getId());
                                 pickupPassengers.add(currentScheduledPassenger);
+                                initialCapacity++;
                         }
                     }
 
