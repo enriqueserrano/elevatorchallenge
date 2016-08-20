@@ -129,7 +129,7 @@ public class Dispatcher {
                 for (int k=0; k < elevatorSystem.getWaitingCalls().size(); k++) {
                     Call evalCall = elevatorSystem.getWaitingCalls().get(k);
 
-                    int lowestCost = 0;
+                    int lowestCost = -1;
                     int bestElevatorIndex = 0;
 
                     // if so, for each elevator
@@ -145,7 +145,7 @@ public class Dispatcher {
 
 
                         }
-                        if (thisCost < lowestCost && thisCost >= 0) {
+                        if ((thisCost < lowestCost && thisCost >= 0) || lowestCost == -1) {
                             lowestCost = thisCost;
                             bestElevatorIndex = j;
                         }
