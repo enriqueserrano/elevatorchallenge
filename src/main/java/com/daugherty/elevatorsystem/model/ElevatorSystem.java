@@ -177,7 +177,7 @@ public class ElevatorSystem {
 		// close the door
 		travelCost += secCloseDoor;
 		// travel to destination
-		travelCost = Math.abs(callStartFloor - call.getEndFloor()) * secPerFloor;
+		travelCost += Math.abs(callStartFloor - call.getEndFloor()) * secPerFloor;
 		
 		// any open/closes/stops on the way from the pickup to the destination
 		stopSet = new HashSet<Integer>();
