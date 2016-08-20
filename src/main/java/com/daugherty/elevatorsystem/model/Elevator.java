@@ -136,7 +136,13 @@ public class Elevator {
 				state = IDLE;
 			} else {
 				int nextDestination = getNextDestination();
-				state = nextDestination<locationFloor ? MOVING_DOWN : MOVING_UP; 
+				if (nextDestination<locationFloor) {
+					state = MOVING_DOWN;
+				} else if (nextDestination>locationFloor) {
+					state = MOVING_UP;
+				} else {
+					state = DOOR_OPENING;
+				}
 				this.setDestinationFloor(nextDestination);
 			}
 			timeInCurrentState = 0;
