@@ -177,7 +177,7 @@ public class ElevatorSystem {
 		// close the door
 		travelCost += secCloseDoor;
 		// travel to destination
-		travelCost = Math.abs(callStartFloor - call.getEndFloor()) * secPerFloor;
+		travelCost += Math.abs(callStartFloor - call.getEndFloor()) * secPerFloor;
 		
 		// any open/closes/stops on the way from the pickup to the destination
 		stopSet = new HashSet<Integer>();
@@ -246,7 +246,8 @@ public class ElevatorSystem {
 		for(int i = 0; i < waitingCalls.size(); i++) {
 			Call currentCall = waitingCalls.get(i);
 			if(currentCall.getId() == currentPassenger.getId()) {
-				waitingCalls.remove(i);
+				waitingCalls.remove(i); 
+				System.out.println("Removed passenger " + currentPassenger.getId() + " from waiting calls");
 				return;
 			}
 		}
@@ -262,6 +263,7 @@ public class ElevatorSystem {
 				callToUpdate.setState(newState);
                 if(newState == Call.COMPLETE) {
                     callToUpdate.setEndTime(currentTime);
+                    System.out.println("Journey complete for passenger " +  + currentPassenger.getId());
                 }
 				return;
 			}

@@ -31,25 +31,25 @@ public class Dispatcher {
         );
         this.elevatorSystem = newElevatorSystem;
 
-        return new Solution();
-        // TODO return the solution from here (start)
+        return start(challenge.getChallengeId());
     }
 
-    public void start() {
-        // TODO - import data, assign constants to System object
+    public Solution start(int challengeId) {
 
         final Solution outputSolution = new Solution();
+        outputSolution.setChallengeId(challengeId);
 
         // primary while loop - iterate once per second
+        System.out.println("Entering Primary Loop");
         while (!elevatorSystem.isAllCallsComplete()) {
-
+        	//System.out.println("TIME: " + currentSeconds);
             // TODO
             // execute any drop offs and pickups
             for (int i = 0; i < elevatorSystem.getElevators().size(); i++) {
                 final Elevator elevator = elevatorSystem.getElevators().get(i);
                 // TODO check that people could still get in before the door completely closes
                 if((elevator.getState() == Elevator.DOOR_OPENING)
-                        && (elevator.getTimeInCurrentState() == 1)) {
+                        && (elevator.getTimeInCurrentState() >= 0)) {
 
                     final ArrayList<Integer> dropoffIds = new ArrayList<Integer>();
 
@@ -70,6 +70,7 @@ public class Dispatcher {
                      // Remove dropoffs from passenger list
                      final Integer currentDropoffId = dropoffIds.get(j);
                      elevator.removePassenger(currentDropoffId);
+                     System.out.println("Removed passenger " + currentDropoffId + " from elevator #" + elevator.getId());
                     }
 
                     // Check for people coming in the array of passengers
@@ -123,6 +124,7 @@ public class Dispatcher {
 
             // evaluate whether anybody is waiting for an elevator
             if (elevatorSystem.getWaitingCalls().size() > 0) {
+            	System.out.println(elevatorSystem.getWaitingCalls().size() + " people are waiting for an elevator");
                 // check if any waiting call are unscheduled, loop through them
                 for (int k=0; k < elevatorSystem.getWaitingCalls().size(); k++) {
                     Call evalCall = elevatorSystem.getWaitingCalls().get(k);
@@ -152,7 +154,9 @@ public class Dispatcher {
                     // Pick the best elevator for this call, and update scheduledpassengers
                     Elevator chosenElevator = elevatorSystem.getElevators().get(bestElevatorIndex);
                     chosenElevator.getScheduledPassengers().add(evalCall);
+                    System.out.println("Scheduled passenger " + evalCall.getId() + " to elevator # " + chosenElevator.getId());
                     evalCall.setState(Call.SCHEDULED);
+                    elevatorSystem.removePassengerFromWaitingCalls(evalCall);
 
                 }
             }
@@ -165,5 +169,6 @@ public class Dispatcher {
 
             currentSeconds++;
         }
+        return outputSolution;
     }
 }

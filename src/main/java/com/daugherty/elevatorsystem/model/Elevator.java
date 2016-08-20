@@ -137,12 +137,20 @@ public class Elevator {
 			} else {
 				int nextDestination = getNextDestination();
 				state = nextDestination<locationFloor ? MOVING_DOWN : MOVING_UP; 
+				this.setDestinationFloor(nextDestination);
 			}
 			timeInCurrentState = 0;
 		} else if (state == IDLE) {
-			if (passengers.size() > 0 && scheduledPassengers.size() > 0) {
+			if (passengers.size() > 0 || scheduledPassengers.size() > 0) {
 				int nextDestination = getNextDestination();
-				state = nextDestination<locationFloor ? MOVING_DOWN : MOVING_UP; 
+				if (nextDestination<locationFloor) {
+					state = MOVING_DOWN;
+				} else if (nextDestination>locationFloor) {
+					state = MOVING_UP;
+				} else {
+					state = DOOR_OPENING;
+				}
+				this.setDestinationFloor(nextDestination);
 			} 
 			timeInCurrentState = 0;
 		} else if (state == MOVING_DOWN && timeInCurrentState < elevatorSystem.getSecPerFloor()) {
@@ -174,11 +182,13 @@ public class Elevator {
 				closestFloor = passengers.get(i).getEndFloor();
 			}
 		}
-		for (int i=0; i < scheduledPassengers.size(); i++) {
-			int distance = Math.abs(scheduledPassengers.get(i).getStartFloor() - locationFloor);
-			if (distance < bestDistance || bestDistance < 0) {
-				bestDistance = distance;
-				closestFloor = scheduledPassengers.get(i).getStartFloor();
+		if (closestFloor==0) {
+			for (int i=0; i < scheduledPassengers.size(); i++) {
+				int distance = Math.abs(scheduledPassengers.get(i).getStartFloor() - locationFloor);
+				if (distance < bestDistance || bestDistance < 0) {
+					bestDistance = distance;
+					closestFloor = scheduledPassengers.get(i).getStartFloor();
+				}
 			}
 		}
 		return closestFloor;
