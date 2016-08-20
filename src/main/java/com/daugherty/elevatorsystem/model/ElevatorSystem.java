@@ -264,7 +264,7 @@ public class ElevatorSystem {
                 if(newState == Call.COMPLETE) {
                     callToUpdate.setEndTime(currentTime);
                     System.out.println("Journey complete for passenger " + currentPassenger.getId());
-                    if (currentPassenger.getId()==806) {
+                    if (currentPassenger.getId()==1154) {
                     	int marcus = 9;
                     	marcus++;
                     }

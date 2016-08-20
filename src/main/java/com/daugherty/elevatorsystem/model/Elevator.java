@@ -157,7 +157,12 @@ public class Elevator {
 			timeInCurrentState++;
 		} else if (state == MOVING_DOWN && timeInCurrentState == elevatorSystem.getSecPerFloor()) {
 			timeInCurrentState = 0;
-			locationFloor--;
+			if (locationFloor == elevatorSystem.getMinFloor()) {
+				locationFloor++;
+				state = MOVING_UP;
+			} else {
+				locationFloor--;
+			}
 			if (locationFloor == destinationFloor) {
 				state = DOOR_OPENING;
 			}
@@ -165,7 +170,12 @@ public class Elevator {
 			timeInCurrentState++;
 		} else if (state == MOVING_UP && timeInCurrentState == elevatorSystem.getSecPerFloor()) {
 			timeInCurrentState = 0;
-			locationFloor++;
+			if (locationFloor == elevatorSystem.getMaxFloor()) {
+				locationFloor--;
+				state = MOVING_DOWN;
+			} else {
+				locationFloor++;
+			}
 			if (locationFloor == destinationFloor) {
 				state = DOOR_OPENING;
 			}
